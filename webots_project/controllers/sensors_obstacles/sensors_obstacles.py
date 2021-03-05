@@ -1,6 +1,5 @@
 """sensors_obstacles controller."""
 
-
 from controller import Robot
 from controller import DistanceSensor
 
@@ -12,7 +11,7 @@ TIME_STEP = 64 # ms 64
 MAX_SPEED = 6.28 # 6.28
 MAX_SENSOR_NUMBER = 16
 
-# Initialize distance sensors
+# Initialize sonar distance sensors
 ds_ = []
 dsname = ['so0', 'so1', 'so2', 'so3', 'so4',
           'so5', 'so6', 'so7', 'so8', 'so9',
@@ -26,7 +25,7 @@ for i in range(MAX_SENSOR_NUMBER):
     
 print(ds_)
 
-# GetDevice function
+# GetDevice functions and velocity
 leftMotor = robot.getDevice('left wheel')
 rightMotor = robot.getDevice('right wheel')
 
@@ -36,23 +35,27 @@ rightMotor.setPosition(float('inf'))
 leftMotor.setVelocity(0.0)
 rightMotor.setVelocity(0.0)
 
+# Laser callback
+def laser_callback(laser_list):
+    pass
+
 #RUN
-
-
-# Main loop:
-# - perform simulation steps until Webots is stopping the controller
 
 while robot.step(TIME_STEP) != -1:
     # Read the sensors:
     dsValues = []
     for i in range(MAX_SENSOR_NUMBER):
         dsValues.append(ds_[i].getValue())
-    print(dsValues)  
-        
+    
+    print(dsValues)
+    
+    laser_callback(dsValues)
+     
     # detect obstacles
-    right_obstacle = dsValues[0] > 200 or dsValues[0] < 300
-    left_obstacle = dsValues[8] > 200 or dsValues[7] < 300
+    #right_obstacle = dsValues[15] < 900 or dsValues[0] < 900
+    #left_obstacle = dsValues[8] < 900 or dsValues[7] < 900
 
+    '''
     # initialize motor speeds at 50% of MAX_SPEED.
     leftSpeed  = 0.5 * MAX_SPEED
     rightSpeed = 0.5 * MAX_SPEED
@@ -70,5 +73,9 @@ while robot.step(TIME_STEP) != -1:
     # write actuators inputs
     leftMotor.setVelocity(leftSpeed)
     rightMotor.setVelocity(rightSpeed)
-   
+    
+    
+
+    print(obstacles['Front'], obstacles['Fleft'])
+    '''
     pass
