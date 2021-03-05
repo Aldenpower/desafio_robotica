@@ -68,45 +68,45 @@ while robot.step(TIME_STEP) != -1:
     for i in range(MAX_SENSOR_NUMBER):
         dsValues.append(round(ds_[i].getValue(), 1))
     
-    if s_c(dsValues, 'front') < 950 and s_c(dsValues, 'fleft') < 950 and s_c(dsValues, 'fright') < 950:
+    if s_c(dsValues, 'front') < 860 and s_c(dsValues, 'fleft') < 860 and s_c(dsValues, 'fright') < 860:
         # Move straight
-        leftSpeed  = 0.5 * MAX_SPEED
-        rightSpeed = 0.5 * MAX_SPEED
+        leftSpeed  = 0.6 * MAX_SPEED
+        rightSpeed = 0.6 * MAX_SPEED
 
-    elif s_c(dsValues, 'front') > 950 and s_c(dsValues, 'fleft') < 950 and s_c(dsValues, 'fright') < 950:
+    elif s_c(dsValues, 'front') > 860 and s_c(dsValues, 'fleft') < 860 and s_c(dsValues, 'fright') < 860:
         # Front obstacle YES Left NO Right NO
-        leftSpeed  = 0.5 * MAX_SPEED
-        rightSpeed = -0.5 * MAX_SPEED
+        leftSpeed  = 0.6 * MAX_SPEED
+        rightSpeed = -0.6 * MAX_SPEED
     
-    elif s_c(dsValues, 'front') < 950 and s_c(dsValues, 'fleft') < 950 and s_c(dsValues, 'fright') > 950:
+    elif s_c(dsValues, 'front') < 860 and s_c(dsValues, 'fleft') < 860 and s_c(dsValues, 'fright') > 860:
         # Front obstacle NO left NO Right YES
-        leftSpeed  = -0.5 * MAX_SPEED
-        rightSpeed = 0.5 * MAX_SPEED
+        leftSpeed  = -0.6 * MAX_SPEED
+        rightSpeed = 0.6 * MAX_SPEED
     
-    elif s_c(dsValues, 'front') < 950 and s_c(dsValues, 'fleft') > 950 and s_c(dsValues, 'fright') < 950:
+    elif s_c(dsValues, 'front') < 860 and s_c(dsValues, 'fleft') > 860 and s_c(dsValues, 'fright') < 860:
         # Front obstacle NO left YES Right NO
-        leftSpeed  = 0.5 * MAX_SPEED
-        rightSpeed = -0.5 * MAX_SPEED
+        leftSpeed  = 0.6 * MAX_SPEED
+        rightSpeed = -0.6 * MAX_SPEED
     
-    elif s_c(dsValues, 'front') > 950 and s_c(dsValues, 'fleft') < 950 and s_c(dsValues, 'fright') > 950:
+    elif s_c(dsValues, 'front') > 860 and s_c(dsValues, 'fleft') < 860 and s_c(dsValues, 'fright') > 860:
         # Front obstacle YES left NO Right YES
-        leftSpeed  = -0.5 * MAX_SPEED
-        rightSpeed = 0.5 * MAX_SPEED
+        leftSpeed  = -0.6 * MAX_SPEED
+        rightSpeed = 0.6 * MAX_SPEED
     
-    elif s_c(dsValues, 'front') > 950 and s_c(dsValues, 'fleft') > 950 and s_c(dsValues, 'fright') < 950:
+    elif s_c(dsValues, 'front') > 860 and s_c(dsValues, 'fleft') > 860 and s_c(dsValues, 'fright') < 860:
         # Front obstacle YES left YES Right NO
-        leftSpeed  = 0.5 * MAX_SPEED
-        rightSpeed = -0.5 * MAX_SPEED
+        leftSpeed  = 0.6 * MAX_SPEED
+        rightSpeed = -0.6 * MAX_SPEED
 
-    elif s_c(dsValues, 'front') > 950 and s_c(dsValues, 'fleft') > 950 and s_c(dsValues, 'fright') > 950:
+    elif s_c(dsValues, 'front') > 860 and s_c(dsValues, 'fleft') > 860 and s_c(dsValues, 'fright') > 860:
         # Front obstacle YES left YES Right YES
-        leftSpeed  = -0.5 * MAX_SPEED
-        rightSpeed = -0.5 * MAX_SPEED
+        leftSpeed  = -0.6 * MAX_SPEED
+        rightSpeed = -0.6 * MAX_SPEED
     
-    elif s_c(dsValues, 'front') < 950 and s_c(dsValues, 'fleft') > 950 and s_c(dsValues, 'fright') > 950:
+    elif s_c(dsValues, 'front') < 860 and s_c(dsValues, 'fleft') > 860 and s_c(dsValues, 'fright') > 860:
         # Front obstacle NO left YES Right YES
-        leftSpeed  = -0.5 * MAX_SPEED
-        rightSpeed = -0.5 * MAX_SPEED
+        leftSpeed  = 0.6 * MAX_SPEED
+        rightSpeed = 0.6 * MAX_SPEED
     
     else:
         print('Unknown case')
@@ -123,23 +123,23 @@ while robot.step(TIME_STEP) != -1:
 
 
     # detect obstacles
-    #right_obstacle = dsValues[15] < 900 or dsValues[0] < 900
-    #left_obstacle = dsValues[8] < 900 or dsValues[7] < 900
+    #right_obstacle = dsValues[15] < 860 or dsValues[0] < 860
+    #left_obstacle = dsValues[8] < 860 or dsValues[7] < 860
 
     '''
     # initialize motor speeds at 50% of MAX_SPEED.
-    leftSpeed  = 0.5 * MAX_SPEED
-    rightSpeed = 0.5 * MAX_SPEED
+    leftSpeed  = 0.6 * MAX_SPEED
+    rightSpeed = 0.6 * MAX_SPEED
     # modify speeds according to obstacles
     if left_obstacle:
         # turn right
-        leftSpeed  = 0.5 * MAX_SPEED
-        rightSpeed = -0.5 * MAX_SPEED
+        leftSpeed  = 0.6 * MAX_SPEED
+        rightSpeed = -0.6 * MAX_SPEED
         print('Left obstacle')
     elif right_obstacle:
         # turn left
-        leftSpeed  = -0.5 * MAX_SPEED
-        rightSpeed = 0.5 * MAX_SPEED
+        leftSpeed  = -0.6 * MAX_SPEED
+        rightSpeed = 0.6 * MAX_SPEED
         print('Right obstacle')
     # write actuators inputs
     leftMotor.setVelocity(leftSpeed)
