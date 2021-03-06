@@ -48,51 +48,66 @@ while robot.step(TIME_STEP) != -1:
     # Switch case sonar laser regions
     def Sonar_distance(argument):
         switcher = {
-            'front' : max(dsValues[3], dsValues[4]),
-            'fleft' : max(dsValues[0], dsValues[1], dsValues[2]),
+            'front' : max(dsValues[2], dsValues[3], dsValues[4], dsValues[5]),
+            'fleft' : max(dsValues[0], dsValues[1]),
             'fright' : max(dsValues[5], dsValues[6], dsValues[7])
         }
         return switcher.get(argument, 'nothing')
     
-    if Sonar_distance('front') < 860 and Sonar_distance('fleft') < 860 and Sonar_distance('fright') < 860:
-        # Move straight
-        leftSpeed  = 0.6 * MAX_SPEED
-        rightSpeed = 0.6 * MAX_SPEED
+    # Obstacles flag
+    dist_param = 860
+    percentile_velocity = 0.8
 
-    elif Sonar_distance('front') > 860 and Sonar_distance('fleft') < 860 and Sonar_distance('fright') < 860:
-        # Front obstacle YES Left NO Right NO
-        leftSpeed  = 0.6 * MAX_SPEED
-        rightSpeed = -0.6 * MAX_SPEED
+    front_obstacle = Sonar_distance('front') > dist_param
+    fright_obstacle = Sonar_distance('fright') > dist_param
+    fleft_obstacle = Sonar_distance('fleft') > dist_param
+
+    front_no_obstacle = Sonar_distance('front') < dist_param
+    fright_no_obstacle = Sonar_distance('fright') < dist_param
+    fleft_no_obstacle = Sonar_distance('fleft') < dist_param
     
-    elif Sonar_distance('front') < 860 and Sonar_distance('fleft') < 860 and Sonar_distance('fright') > 860:
+    print('Distance sensor values')
+
+    # Conditonal avoiding obstacles
+    if front_no_obstacle and fleft_no_obstacle and fright_no_obstacle:
+        print('Case 1 - Nothing')
+        leftSpeed  = percentile_velocity * MAX_SPEED
+        rightSpeed = percentile_velocity * MAX_SPEED
+
+    elif front_obstacle and fleft_no_obstacle and fright_no_obstacle:
+        print('Case 2 - Front')
+        leftSpeed  = percentile_velocity * MAX_SPEED
+        rightSpeed = -percentile_velocity * MAX_SPEED
+    
+    elif front_no_obstacle and fleft_no_obstacle and fright_obstacle:
         # Front obstacle NO left NO Right YES
-        leftSpeed  = -0.6 * MAX_SPEED
-        rightSpeed = 0.6 * MAX_SPEED
+        leftSpeed  = -percentile_velocity * MAX_SPEED
+        rightSpeed = percentile_velocity * MAX_SPEED
     
-    elif Sonar_distance('front') < 860 and Sonar_distance('fleft') > 860 and Sonar_distance('fright') < 860:
+    elif front_no_obstacle and fleft_obstacle and fright_no_obstacle:
         # Front obstacle NO left YES Right NO
-        leftSpeed  = 0.6 * MAX_SPEED
-        rightSpeed = -0.6 * MAX_SPEED
+        leftSpeed  = percentile_velocity * MAX_SPEED
+        rightSpeed = -percentile_velocity * MAX_SPEED
     
-    elif Sonar_distance('front') > 860 and Sonar_distance('fleft') < 860 and Sonar_distance('fright') > 860:
+    elif front_obstacle and fleft_no_obstacle and fright_obstacle:
         # Front obstacle YES left NO Right YES
-        leftSpeed  = -0.6 * MAX_SPEED
-        rightSpeed = 0.6 * MAX_SPEED
+        leftSpeed  = -percentile_velocity * MAX_SPEED
+        rightSpeed = percentile_velocity * MAX_SPEED
     
-    elif Sonar_distance('front') > 860 and Sonar_distance('fleft') > 860 and Sonar_distance('fright') < 860:
+    elif front_obstacle and fleft_obstacle and fright_no_obstacle:
         # Front obstacle YES left YES Right NO
-        leftSpeed  = 0.6 * MAX_SPEED
-        rightSpeed = -0.6 * MAX_SPEED
+        leftSpeed  = percentile_velocity * MAX_SPEED
+        rightSpeed = -percentile_velocity * MAX_SPEED
 
-    elif Sonar_distance('front') > 860 and Sonar_distance('fleft') > 860 and Sonar_distance('fright') > 860:
+    elif front_obstacle and fleft_obstacle and fright_obstacle:
         # Front obstacle YES left YES Right YES
-        leftSpeed  = -0.6 * MAX_SPEED
-        rightSpeed = -0.6 * MAX_SPEED
+        leftSpeed  = -percentile_velocity * MAX_SPEED
+        rightSpeed = -percentile_velocity * MAX_SPEED
     
-    elif Sonar_distance('front') < 860 and Sonar_distance('fleft') > 860 and Sonar_distance('fright') > 860:
+    elif front_no_obstacle and fleft_obstacle and fright_obstacle:
         # Front obstacle NO left YES Right YES
-        leftSpeed  = 0.6 * MAX_SPEED
-        rightSpeed = 0.6 * MAX_SPEED
+        leftSpeed  = percentile_velocity * MAX_SPEED
+        rightSpeed = percentile_velocity * MAX_SPEED
     
     else:
         print('Unknown case')
@@ -100,6 +115,9 @@ while robot.step(TIME_STEP) != -1:
     # Set velocity
     leftMotor.setVelocity(leftSpeed)
     rightMotor.setVelocity(rightSpeed)
-    print('Distance sensor values ', dsValues)
-
-    pass
+    
+    # Printing options
+    c = 0
+    for dist in dsValues:
+        print(f's{c} {dist}')
+        c += 1
