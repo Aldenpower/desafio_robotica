@@ -2,14 +2,16 @@
 
 from controller import Robot
 from controller import DistanceSensor
+from controller import PositionSensor
 
 # Create the Robot instance.
 robot = Robot()
 
 # Get the time step, max speed and sensor numbers.
 TIME_STEP = 64 # ms 64
-MAX_SPEED = 6.28 # 6.28
+MAX_SPEED = 8 # 6.28
 MAX_SENSOR_NUMBER = 16
+MAX_SENSOR_POSITON = 2
 
 # Initialize sonar distance sensors
 ds_ = []
@@ -23,7 +25,13 @@ for i in range(MAX_SENSOR_NUMBER):
     ds_.append(robot.getDevice(dsname[i]))
     ds_[i].enable(TIME_STEP)
     
-print(ds_)
+# Initializa position sensor
+ps_ = []
+psname = ['left wheel sensor', 'right wheel sensor']
+
+for i in range(MAX_SENSOR_POSITON):
+    ps_.append(robot.getDevice(psname[i]))
+    ps_[i].enable(TIME_STEP)
 
 # GetDevice functions and velocity
 leftMotor = robot.getDevice('left wheel')
@@ -35,30 +43,36 @@ rightMotor.setPosition(float('inf'))
 leftMotor.setVelocity(0.0)
 rightMotor.setVelocity(0.0)
 
+print(leftMotor)
+
 #RUN
 
 while robot.step(TIME_STEP) != -1:
 
-    # Read the sensors:
-    dsValues = []
     # Get sensor values
+    dsValues = []
     for i in range(MAX_SENSOR_NUMBER):
         dsValues.append(round(ds_[i].getValue(), 1))
+    
+    # Get position sensor values
+    psValues = []
+    for i in range(MAX_SENSOR_POSITON):
+        psValues.append(ps_[i].getValue())
     
     # Switch case sonar laser regions
     def Sonar_distance(argument):
         switcher = {
-            'front' : max(dsValues[2], dsValues[3], dsValues[4], dsValues[5]),
-            'fleft' : max(dsValues[0], dsValues[1]),
+            'front' : max(dsValues[3], dsValues[4]),
+            'fleft' : max(dsValues[0], dsValues[1], dsValues[2]),
             'fright' : max(dsValues[5], dsValues[6], dsValues[7])
         }
         return switcher.get(argument, 'nothing')
     
     # Obstacles flag
-    dist_param = 860
-    percentile_velocity = 0.8
+    dist_param = 860 #860
+    percentile_velocity = 0.9 #0.8
 
-    front_obstacle = Sonar_distance('front') > dist_param
+    front_obstacle = Sonar_distance('front') > dist_param or Sonar_distance('front') == 0
     fright_obstacle = Sonar_distance('fright') > dist_param
     fleft_obstacle = Sonar_distance('fleft') > dist_param
 
@@ -66,6 +80,7 @@ while robot.step(TIME_STEP) != -1:
     fright_no_obstacle = Sonar_distance('fright') < dist_param
     fleft_no_obstacle = Sonar_distance('fleft') < dist_param
     
+    print('Positon values', psValues)
     print('Distance sensor values')
 
     # Conditonal avoiding obstacles
@@ -80,32 +95,32 @@ while robot.step(TIME_STEP) != -1:
         rightSpeed = -percentile_velocity * MAX_SPEED
     
     elif front_no_obstacle and fleft_no_obstacle and fright_obstacle:
-        # Front obstacle NO left NO Right YES
+        print('Case 3 - Fright')
         leftSpeed  = -percentile_velocity * MAX_SPEED
         rightSpeed = percentile_velocity * MAX_SPEED
     
     elif front_no_obstacle and fleft_obstacle and fright_no_obstacle:
-        # Front obstacle NO left YES Right NO
+        print('Case 4 - Fleft')
         leftSpeed  = percentile_velocity * MAX_SPEED
         rightSpeed = -percentile_velocity * MAX_SPEED
     
     elif front_obstacle and fleft_no_obstacle and fright_obstacle:
-        # Front obstacle YES left NO Right YES
+        print('Case 5 - Front and Fright')
         leftSpeed  = -percentile_velocity * MAX_SPEED
         rightSpeed = percentile_velocity * MAX_SPEED
     
     elif front_obstacle and fleft_obstacle and fright_no_obstacle:
-        # Front obstacle YES left YES Right NO
+        print('Case 6 - Front and Fleft')
         leftSpeed  = percentile_velocity * MAX_SPEED
         rightSpeed = -percentile_velocity * MAX_SPEED
-
+    
     elif front_obstacle and fleft_obstacle and fright_obstacle:
-        # Front obstacle YES left YES Right YES
-        leftSpeed  = -percentile_velocity * MAX_SPEED
-        rightSpeed = -percentile_velocity * MAX_SPEED
+        print('Case 7 - Front and Fleft and Fright')
+        leftSpeed  = -0.8 * MAX_SPEED
+        rightSpeed = -0.8 * MAX_SPEED
     
     elif front_no_obstacle and fleft_obstacle and fright_obstacle:
-        # Front obstacle NO left YES Right YES
+        print('Case 6 - Fleft and Fright')
         leftSpeed  = percentile_velocity * MAX_SPEED
         rightSpeed = percentile_velocity * MAX_SPEED
     
