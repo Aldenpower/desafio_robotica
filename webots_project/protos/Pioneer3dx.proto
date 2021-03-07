@@ -997,6 +997,12 @@ PROTO Pioneer3dx [
       }
       Group {
         children IS extensionSlot
+          DEF EPUCK_LS1 LightSensor {
+          translation 0.025 0.0329 -0.022
+          rotation 0 1 0 0.77
+          name "ls1"
+          lookupTable [
+          1 4095 0.01 2 0 0.01
       }
     ]
     name IS name
