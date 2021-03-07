@@ -96,7 +96,7 @@ while robot.step(TIME_STEP) != -1:
         return switcher.get(argument, 'nothing')
     
     # Obstacles boolean flag
-    dist_param = 890 #860
+    dist_param = 893 #860 890
     percentile_velocity = 0.9 #0.8
 
     front_obstacle = Sonar_distance('front') > dist_param or Sonar_distance('front') == 0
@@ -109,15 +109,26 @@ while robot.step(TIME_STEP) != -1:
     
     print('Positon values', psValues)
     print('Distance sensor values')
-    
-    if k < 1:
-        print('I am blocked by an obstacle edge!')
-
     # Creating conditonal obstacles avoiding and setting motor velocity
     if front_no_obstacle and fleft_no_obstacle and fright_no_obstacle:
         print('Case 1 - Nothing')
         leftSpeed  = percentile_velocity * MAX_SPEED
         rightSpeed = percentile_velocity * MAX_SPEED
+
+        # Condition for obstacle edges
+        if k < 1:
+            print('I am blocked by an obstacle edge!')
+            leftSpeed  = - 1 * MAX_SPEED
+            rightSpeed = - 1 * MAX_SPEED
+
+            leftMotor.setVelocity(leftSpeed)
+            rightMotor.setVelocity(rightSpeed)
+
+            leftSpeed  = percentile_velocity * MAX_SPEED
+            rightSpeed = - percentile_velocity *MAX_SPEED
+
+            leftMotor.setVelocity(leftSpeed)
+            rightMotor.setVelocity(rightSpeed)
 
     elif front_obstacle and fleft_no_obstacle and fright_no_obstacle:
         print('Case 2 - Front')
@@ -159,6 +170,10 @@ while robot.step(TIME_STEP) != -1:
     # Setting velocity
     leftMotor.setVelocity(leftSpeed)
     rightMotor.setVelocity(rightSpeed)
+
+    leftMotor.setPosition(float('inf'))
+    rightMotor.setPosition(float('inf'))
+
     
     # Printing options
     c = 0
