@@ -47,18 +47,45 @@ rightMotor.setVelocity(0.0)
 
 #RUNNING SIMULATION
 
+average_sonar_sensor_acum = [1000, 0, 1000, 0, 1000, 1000, 0, 1000, 0, 1000]
+
 while robot.step(TIME_STEP) != -1:
 
-    # Getting sensor values
+    # Getting sonar sensor values
     dsValues = []
     for i in range(MAX_SONAR_SENSOR_NUMBER):
         dsValues.append(round(ds_[i].getValue(), 1))
     
+    average_sonar_sensor = round(sum(dsValues) / MAX_SONAR_SENSOR_NUMBER, 2)
+    average_sonar_sensor_acum.append(average_sonar_sensor)
+
+        # Function for standard deviation calculation of n last values
+    def std_dev(n):
+        valuesn = []
+        s_ = 0
+            # Picking n last elements of the average_sonar_sensor_acum
+        for c in range(-1, -n -1, -1):
+            valuesn.append(average_sonar_sensor_acum[c])
+
+            # Average
+        av = sum(valuesn) / n
+            # x - average
+        for k in valuesn:
+            partial = (k - av) ** 2
+            s_ += partial
+        
+            # Standard deviation
+        s_ = (s_ / n) ** 0.5
+        return s_
+    
+    k = std_dev(10)
+    print(f'Standard deviation of 10 last average laser values {k}')
+
     # Getting position sensor values
     psValues = []
     for i in range(MAX_POSITION_SENSOR_NUMBER):
         psValues.append(ps_[i].getValue())
-    
+
     # Switch for sonar laser regions
     def Sonar_distance(argument):
         switcher = {
@@ -82,6 +109,9 @@ while robot.step(TIME_STEP) != -1:
     
     print('Positon values', psValues)
     print('Distance sensor values')
+    
+    if k < 1:
+        print('I am blocked by an obstacle edge!')
 
     # Creating conditonal obstacles avoiding and setting motor velocity
     if front_no_obstacle and fleft_no_obstacle and fright_no_obstacle:
@@ -123,7 +153,6 @@ while robot.step(TIME_STEP) != -1:
         print('Case 6 - Fleft and Fright')
         leftSpeed  = percentile_velocity * MAX_SPEED
         rightSpeed = percentile_velocity * MAX_SPEED
-    
     else:
         print('Unknown case')
         
@@ -136,3 +165,5 @@ while robot.step(TIME_STEP) != -1:
     for dist in dsValues:
         print(f's{c} {dist}')
         c += 1
+    
+    print(f'Average sonar sensor distance {round(average_sonar_sensor, 2)}')
