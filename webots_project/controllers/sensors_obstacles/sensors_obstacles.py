@@ -4,16 +4,16 @@ from controller import Robot
 from controller import DistanceSensor
 from controller import PositionSensor
 
-# Create the Robot instance.
+# Creating the Robot instance.
 robot = Robot()
 
-# Get the time step, max speed and sensor numbers.
+# Getting the time step, max speed, and sensors quantity.
 TIME_STEP = 64 # ms 64
 MAX_SPEED = 8 # 6.28
 MAX_SENSOR_NUMBER = 16
 MAX_SENSOR_POSITON = 2
 
-# Initialize sonar distance sensors
+# Initializing sonar distance sensors
 ds_ = []
 dsname = ['so0', 'so1', 'so2', 'so3', 'so4',
           'so5', 'so6', 'so7', 'so8', 'so9',
@@ -25,7 +25,7 @@ for i in range(MAX_SENSOR_NUMBER):
     ds_.append(robot.getDevice(dsname[i]))
     ds_[i].enable(TIME_STEP)
     
-# Initializa position sensor
+# Initializing position sensors
 ps_ = []
 psname = ['left wheel sensor', 'right wheel sensor']
 
@@ -33,33 +33,33 @@ for i in range(MAX_SENSOR_POSITON):
     ps_.append(robot.getDevice(psname[i]))
     ps_[i].enable(TIME_STEP)
 
-# GetDevice functions and velocity
+# Getting wheel devices
 leftMotor = robot.getDevice('left wheel')
 rightMotor = robot.getDevice('right wheel')
 
+# Setting the motors position
 leftMotor.setPosition(float('inf'))
 rightMotor.setPosition(float('inf'))
 
+# Setting the motors velocity
 leftMotor.setVelocity(0.0)
 rightMotor.setVelocity(0.0)
 
-print(leftMotor)
-
-#RUN
+#RUNNING SIMULATION
 
 while robot.step(TIME_STEP) != -1:
 
-    # Get sensor values
+    # Getting sensor values
     dsValues = []
     for i in range(MAX_SENSOR_NUMBER):
         dsValues.append(round(ds_[i].getValue(), 1))
     
-    # Get position sensor values
+    # Getting position sensor values
     psValues = []
     for i in range(MAX_SENSOR_POSITON):
         psValues.append(ps_[i].getValue())
     
-    # Switch case sonar laser regions
+    # Switch for sonar laser regions
     def Sonar_distance(argument):
         switcher = {
             'front' : max(dsValues[3], dsValues[4]),
@@ -68,8 +68,8 @@ while robot.step(TIME_STEP) != -1:
         }
         return switcher.get(argument, 'nothing')
     
-    # Obstacles flag
-    dist_param = 860 #860
+    # Obstacles boolean flag
+    dist_param = 890 #860
     percentile_velocity = 0.9 #0.8
 
     front_obstacle = Sonar_distance('front') > dist_param or Sonar_distance('front') == 0
@@ -83,7 +83,7 @@ while robot.step(TIME_STEP) != -1:
     print('Positon values', psValues)
     print('Distance sensor values')
 
-    # Conditonal avoiding obstacles
+    # Creating conditonal obstacles avoiding and setting motor velocity
     if front_no_obstacle and fleft_no_obstacle and fright_no_obstacle:
         print('Case 1 - Nothing')
         leftSpeed  = percentile_velocity * MAX_SPEED
@@ -127,7 +127,7 @@ while robot.step(TIME_STEP) != -1:
     else:
         print('Unknown case')
         
-    # Set velocity
+    # Setting velocity
     leftMotor.setVelocity(leftSpeed)
     rightMotor.setVelocity(rightSpeed)
     
