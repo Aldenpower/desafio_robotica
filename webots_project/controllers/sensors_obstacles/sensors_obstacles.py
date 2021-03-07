@@ -10,8 +10,8 @@ robot = Robot()
 # Getting the time step, max speed, and sensors quantity.
 TIME_STEP = 64 # ms 64
 MAX_SPEED = 8 # 6.28
-MAX_SENSOR_NUMBER = 16
-MAX_SENSOR_POSITON = 2
+MAX_SONAR_SENSOR_NUMBER = 16
+MAX_POSITION_SENSOR_NUMBER = 2
 
 # Initializing sonar distance sensors
 ds_ = []
@@ -21,7 +21,7 @@ dsname = ['so0', 'so1', 'so2', 'so3', 'so4',
           'so14', 'so15'
          ]
          
-for i in range(MAX_SENSOR_NUMBER):
+for i in range(MAX_SONAR_SENSOR_NUMBER):
     ds_.append(robot.getDevice(dsname[i]))
     ds_[i].enable(TIME_STEP)
     
@@ -29,7 +29,7 @@ for i in range(MAX_SENSOR_NUMBER):
 ps_ = []
 psname = ['left wheel sensor', 'right wheel sensor']
 
-for i in range(MAX_SENSOR_POSITON):
+for i in range(MAX_POSITION_SENSOR_NUMBER):
     ps_.append(robot.getDevice(psname[i]))
     ps_[i].enable(TIME_STEP)
 
@@ -51,12 +51,12 @@ while robot.step(TIME_STEP) != -1:
 
     # Getting sensor values
     dsValues = []
-    for i in range(MAX_SENSOR_NUMBER):
+    for i in range(MAX_SONAR_SENSOR_NUMBER):
         dsValues.append(round(ds_[i].getValue(), 1))
     
     # Getting position sensor values
     psValues = []
-    for i in range(MAX_SENSOR_POSITON):
+    for i in range(MAX_POSITION_SENSOR_NUMBER):
         psValues.append(ps_[i].getValue())
     
     # Switch for sonar laser regions
