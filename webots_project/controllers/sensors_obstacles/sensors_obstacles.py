@@ -3,6 +3,7 @@
 from controller import Robot
 from controller import DistanceSensor
 from controller import PositionSensor
+from controller import LightSensor
 
 # Creating the Robot instance.
 robot = Robot()
@@ -24,7 +25,11 @@ dsname = ['so0', 'so1', 'so2', 'so3', 'so4',
 for i in range(MAX_SONAR_SENSOR_NUMBER):
     ds_.append(robot.getDevice(dsname[i]))
     ds_[i].enable(TIME_STEP)
-    
+
+# Initiazling light sensor
+ls = robot.getDevice('light sensor')
+ls.enable(TIME_STEP)
+
 # Initializing position sensors
 ps_ = []
 psname = ['left wheel sensor', 'right wheel sensor']
@@ -87,6 +92,9 @@ while robot.step(TIME_STEP) != -1:
     psValues = []
     for i in range(MAX_POSITION_SENSOR_NUMBER):
         psValues.append(ps_[i].getValue())
+
+    # Getting light sensor values
+    ls_value = ls.getValue()
 
     # Switch for sonar laser regions
     def Sonar_distance(argument):
@@ -186,5 +194,6 @@ while robot.step(TIME_STEP) != -1:
         print(f's{c} {dist}')
         c += 1
     
+    print(f'Light sensor value {ls_value}')
     print(f'Average sonar sensor distance {round(average_sonar_sensor, 2)}')
     print(f'Loop counter {loop_counter_acum[-1]}')
