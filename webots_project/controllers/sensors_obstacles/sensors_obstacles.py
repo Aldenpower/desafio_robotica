@@ -48,6 +48,8 @@ rightMotor.setVelocity(0.0)
 #RUNNING SIMULATION
 
 average_sonar_sensor_acum = [1000, 0, 1000, 0, 1000, 1000, 0, 1000, 0, 1000]
+loop_counter_acum = []
+counter = 0
 
 while robot.step(TIME_STEP) != -1:
 
@@ -174,7 +176,10 @@ while robot.step(TIME_STEP) != -1:
     leftMotor.setPosition(float('inf'))
     rightMotor.setPosition(float('inf'))
 
-    
+    # Loop counter
+    counter += 1
+    loop_counter_acum.append(counter)
+
     # Printing options
     c = 0
     for dist in dsValues:
@@ -182,3 +187,4 @@ while robot.step(TIME_STEP) != -1:
         c += 1
     
     print(f'Average sonar sensor distance {round(average_sonar_sensor, 2)}')
+    print(f'Loop counter {loop_counter_acum[-1]}')
