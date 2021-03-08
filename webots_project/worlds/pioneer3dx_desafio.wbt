@@ -127,6 +127,10 @@ DEF PIONEER_3DX Pioneer3dx {
   translation -4.563661910918624 0.09694367993648513 -3.7050836705319417
   rotation -0.007902413155349026 0.9998373860053044 -0.016209670336016058 -2.2344886557765458
   controller ""
+  extensionSlot [
+    LightSensor {
+    }
+  ]
 }
 CardboardBox {
   translation -0.201269 0.3 -4.79642
