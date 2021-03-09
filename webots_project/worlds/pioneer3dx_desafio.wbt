@@ -129,7 +129,9 @@ DEF PIONEER_3DX Pioneer3dx {
   controller "sensors_obstacles"
   extensionSlot [
     LightSensor {
-      colorFilter 0.1 0.1 0.1
+      scale 2 2 2
+      translationStep 0
+      colorFilter 0.1 0 0
     }
   ]
 }
