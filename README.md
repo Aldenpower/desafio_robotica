@@ -177,43 +177,66 @@ elif front_obstacle and fleft_no_obstacle and fright_no_obstacle:
         print('Case 2 - Front')
         leftSpeed  = percentile_velocity * MAX_SPEED
         rightSpeed = -percentile_velocity * MAX_SPEED
-    
-    elif front_no_obstacle and fleft_no_obstacle and fright_obstacle:
+        
+elif front_no_obstacle and fleft_no_obstacle and fright_obstacle:
         print('Case 3 - Fright')
         leftSpeed  = -percentile_velocity * MAX_SPEED
         rightSpeed = percentile_velocity * MAX_SPEED
     
-    elif front_no_obstacle and fleft_obstacle and fright_no_obstacle:
+elif front_no_obstacle and fleft_obstacle and fright_no_obstacle:
         print('Case 4 - Fleft')
         leftSpeed  = percentile_velocity * MAX_SPEED
         rightSpeed = -percentile_velocity * MAX_SPEED
     
-    elif front_obstacle and fleft_no_obstacle and fright_obstacle:
+elif front_obstacle and fleft_no_obstacle and fright_obstacle:
         print('Case 5 - Front and Fright')
         leftSpeed  = -percentile_velocity * MAX_SPEED
         rightSpeed = percentile_velocity * MAX_SPEED
     
-    elif front_obstacle and fleft_obstacle and fright_no_obstacle:
+elif front_obstacle and fleft_obstacle and fright_no_obstacle:
         print('Case 6 - Front and Fleft')
         leftSpeed  = percentile_velocity * MAX_SPEED
         rightSpeed = -percentile_velocity * MAX_SPEED
     
-    elif front_obstacle and fleft_obstacle and fright_obstacle:
+elif front_obstacle and fleft_obstacle and fright_obstacle:
         print('Case 7 - Front and Fleft and Fright')
         leftSpeed  = -0.8 * MAX_SPEED
         rightSpeed = -0.8 * MAX_SPEED
     
-    elif front_no_obstacle and fleft_obstacle and fright_obstacle:
+elif front_no_obstacle and fleft_obstacle and fright_obstacle:
         print('Case 6 - Fleft and Fright')
         leftSpeed  = percentile_velocity * MAX_SPEED
         rightSpeed = percentile_velocity * MAX_SPEED
-    else:
+else:
         print('Unknown case')
-
+```
+The last if conditional will stop de robot and break the loop if the light sensor value is greater than 850
+```sh
+if ls_value > 850:
+   leftSpeed  = 0
+   rightSpeed = 0
+   leftMotor.setVelocity(leftSpeed)
+   rightMotor.setVelocity(rightSpeed)
+     
+   break
 ```
 Finally the velocity will be updated based on the conditional statement and move the robot through
-the maze avoidi ng obstacles.
+the maze avoiding obstacles.
 ```sh
 leftMotor.setVelocity(leftSpeed)
 rightMotor.setVelocity(rightSpeed)
+
+# Loop counter
+counter += 1
+loop_counter_acum.append(counter)
+
+# Printing options
+c = 0
+for dist in dsValues:
+   print(f's{c} {dist}')
+   c += 1
+    
+print(f'Light sensor value {ls_value}')
+print(f'Average sonar sensor distance {round(average_sonar_sensor, 2)}')
+print(f'Loop counter {loop_counter_acum[-1]}')
 ```
