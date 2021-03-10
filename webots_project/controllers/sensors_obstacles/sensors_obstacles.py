@@ -176,6 +176,16 @@ while robot.step(TIME_STEP) != -1:
         rightSpeed = percentile_velocity * MAX_SPEED
     else:
         print('Unknown case')
+
+    # STOP CONDITION!
+    if ls_value > 850:
+        leftSpeed  = 0
+        rightSpeed = 0
+
+        leftMotor.setVelocity(leftSpeed)
+        rightMotor.setVelocity(rightSpeed)
+     
+        break
         
     # Setting velocity
     leftMotor.setVelocity(leftSpeed)
