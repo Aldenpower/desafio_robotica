@@ -1,142 +1,179 @@
-# DESAFIO DE ROBOTICA
-
-To solve the challenge, i created a controller called sensors_obstacles.py loc
-ated at the folder webots_project/controllers/sensor_obstacles/
-
-# THE CONTROLLER
-
+# Desafio de robótica
+For solving the challenge i created a controller located at the folder:
+>webots_project/controllers/sensors_obstacles/sensors_obstacles.py
+### THE CONTROLLER
+#### _Importing python classes_
+```sh
 from controller import Robot
 from controller import DistanceSensor
-from controller import PositionSensor
+from controller import LightSensor
+```
 
-First i imported the classes that i will use on the script:
-
-    - The Robot class is a basis node for building a robot.
-
-    - The DistanceSensor class is a node that can be used
-    to model generic sensor. In that case, the Pioneer3dx
+- Robot > The Robot class is a basis node for building a robot.
+- DistanceSensor > The DistanceSensor class is a node that can be used
+    for modeling generic sensor. In this case, the Pioneer3dx
     robot uses a sonar sensor.
+- LightSensor > The light sensor nodes is used for measure the irradiance
+of light in a given direction
 
-    - The PositionSensor class (...)
-
+#### _Creating the robot object_
+```sh
 robot = Robot()
-
-From the class Robot i created a object called robot.
-
+```
+#### _Global variables_
+At this point i created global variables that will be used to set parameters of the robot
+```sh
 TIME_STEP = 64 # ms 64
 MAX_SPEED = 8 # 6.28
 MAX_SENSOR_NUMBER = 16
-MAX_SENSOR_POSITON = 2
+```
+- TIME_STEP > Time step increment used by Webots to advance the virtual
+time in miliseconds (ms) 
+- MAX_SPEED > Maximum velocity ot the robot
+- MAX_SENSOR_NUMBER > Number of the sonar sensors in the Pioneed3dx
 
-At this point i created global variables that will be used
-to set parameters of the robot.
-
-    - TIME_STEP (...)
-
-    - MAX_SPEED will set the maximum velocity ot the robot
-
-    - MAX_SENSOR_NUMBER will set the number of sonar dist
-    ance sensor of the robot
-
-    - MAX_SENSOR_POSITION (...)
-
+#### _Initializing sonar sensors_
+Than i set an empty list for receiving the object of the sonar distance sensors and a list
+with the name of the distance sensors of the Piorneer3dx robot
+```sh
 ds_ = []
 dsname = ['so0', 'so1', 'so2', 'so3', 'so4',
           'so5', 'so6', 'so7', 'so8', 'so9',
           'so10', 'so11', 'so12', 'so13',
           'so14', 'so15'
          ]
-
-Than i set a empty list to receive the object of the sonar
-distance sensors and a list with the name of the distance
-sensors of the Piorneer3dx robot.
-
-for i in range(MAX_SENSOR_NUMBER):
+```
+With the for loop in the range of the total sensor number i put the objects distance sensor
+in the list with the .getDevice robot method than enabled them
+```sh
+for i in range(MAX_SONAR_SENSOR_NUMBER):
     ds_.append(robot.getDevice(dsname[i]))
     ds_[i].enable(TIME_STEP)
+```
+#### _Running simulation_
 
-With the for loop in the range of the total sensor numbers
-i put the objects distance sensor in the list with the .get
-Device robot method than enabled them.
+```sh
+average_sonar_sensor_acum = [1000, 0, 1000, 0, 1000,
+                             1000, 0, 1000, 0, 1000]
+loop_counter_acum = []
+counter = 0
+```
+- average_sonar_sensor_acum > Definig a list with values that result in a standard
+deviation greater than 1 for conditional considerations
+- loop_counter_acum > Defining an empty list for counting the while loops
+- counter > Setting the counter to 0
 
-leftMotor = robot.getDevice('left wheel')
-rightMotor = robot.getDevice('right wheel')
-
-The leftMotor is a device of the robot that represents
-the left wheel of the Pioneer3dx, the rightMotor is a
-device of the robot that represents the right wheel of
-the Pioneer3dx. Through the getDevice method of the robot
-i called them in two variables.
-
-leftMotor.setPosition(float('inf'))
-rightMotor.setPosition(float('inf'))
-
-leftMotor.setVelocity(0.0)
-rightMotor.setVelocity(0.0)
-
-With the setVelocity method i set the position of the
-motors to float('inf') for no movement of the robot and
-set the setVelocity to 0.
-
+Starting the while loop with a True condition
+```sh
 while robot.step(TIME_STEP) != -1:
-
-With the TIME_STEP = 64 the robot will enter in the while 
-loop and repeat them until receive an exit command.
-
+```
+The dsValues empty list will receive through the for loop, sensor values of the sonar distance
+sensor. The loop will get the name of the sensor and iterate with the getValue method to append
+the list with the values.
+```sh
 dsValues = []
-    for i in range(MAX_SENSOR_NUMBER):
-        dsValues.append(round(ds_[i].getValue(), 1))
+for i in range(MAX_SONAR_SENSOR_NUMBER):
+    dsValues.append(round(ds_[i].getValue(), 1))
+```
+Appending the average_sonar_sensor with average values of the sonar distance sensors
+```sh
+average_sonar_sensor = round(sum(dsValues) / MAX_SONAR_SENSOR_NUMBER, 2)
+average_sonar_sensor_acum.append(average_sonar_sensor)
+```
+- average_sonar_sensor > Defining the average value of the distances of the sensors
 
-The dsValues empty list will receive through the for loop,
-sensor values of the sonar distance sensor. The loop will
-get the name of the sensor and iterate with the getValue
-method to append the list with the values.
+Function for standard deviation calculation of n last values of the laser values
+```sh
+def std_dev(n):
+    valuesn = []
+    s_ = 0
+        # Picking n last elements of the average_sonar_sensor_acum
+    for c in range(-1, -n -1, -1):
+        valuesn.append(average_sonar_sensor_acum[c])
 
+        # Average
+    av = sum(valuesn) / n
+        # x - average
+    for k in valuesn:
+        partial = (k - av) ** 2
+        s_ += partial
+        
+        # Standard deviation
+    s_ = (s_ / n) ** 0.5
+    return s_
+```
+Defining the calculation of the standard deviation of the 10 last values of the laser
+sonar laser values 
+```sh
+k = std_dev(10)
+print(f'Standard deviation of 10 last average laser values {k}')
+```
+Getting light sensor values
+```sh
+ls_value = ls.getValue()
+```
+Creating a function to get the name of the region of the robot lasers. In the dictionary
+i set the respective maximum value of a laser range that i defined with the names 'front' for
+the front of the robot, 'fleft' for the front lef t of the robot and 'fright' for the front right
+of the robot. The get dictionary method return the respective value of the maximum sensor
+value.
+
+```sh
 def Sonar_distance(argument):
-        switcher = {
-            'front' : max(dsValues[3], dsValues[4]),
-            'fleft' : max(dsValues[0], dsValues[1], dsValues[2]),
-            'fright' : max(dsValues[5], dsValues[6], dsValues[7])
-        }
-        return switcher.get(argument, 'nothing')
-
-Then i created a function to get the name of the region of
-the robot lasers. In the dictionary i set the respective
-maximum value of a laser range that i defined with the names
-'front' for the front of the robot, 'fleft' for the front lef
-t of the robot and 'fright' for the front right of the robot.
-The get dictionary method return the respective value of the
-maximum value sensor.
-
-dist_param = 860 #860
+    switcher = {
+        'front' : max(dsValues[3], dsValues[4]),
+        'fleft' : max(dsValues[0], dsValues[1], dsValues[2]),
+        'fright' : max(dsValues[5], dsValues[6], dsValues[7])
+    }
+    return switcher.get(argument, 'nothing')
+```
+The value dist_param simulate the maximum value of the robot sensor before colide with an obstacle,
+values closer to 1000 will take robot closer to the obstacles. The percntile_velocity simply get
+a portion of the total velocity of the robot for future alterations.
+```sh
+dist_param = 893 #860 890
 percentile_velocity = 0.9 #0.8
-
-The value dist_param simulate the maximum value of the robot
-sensor before colide with an obstacle, values closer to 1000
-will take robot closer to the obstacles. The percntile_veloc
-ity simply get a portion of the total velocity of the robot
-for future alterations.
-
-front_obstacle = Sonar_distance('front') > dist_param or 
-Sonar_distance('front') == 0
+```
+With the variables front_obstacle, fright_obstacle, fleft_ obstacle, front_no_obstacle, fright_no_obstacle,
+fleft_no_obstacle receive a boolean value that will represents the presence or not of obstacles in the regions
+of the sensor lasers.
+```sh
+front_obstacle = Sonar_distance('front') > dist_param or Sonar_distance('front') == 0
 fright_obstacle = Sonar_distance('fright') > dist_param
 fleft_obstacle = Sonar_distance('fleft') > dist_param
+
 front_no_obstacle = Sonar_distance('front') < dist_param
 fright_no_obstacle = Sonar_distance('fright') < dist_param
 fleft_no_obstacle = Sonar_distance('fleft') < dist_param
-
-With the variables front_obstacle, fright_obstacle, fleft_
-obstacle, front_no_obstacle, fright_no_obstacle, fleft_no_
-obstacle and receive a boolean value that will represents
-the presence of obstacles in the regions of the sensor la
-sers.
-
+    
+print('Positon values', psValues)
+print('Distance sensor values')
+```
+With conditional if statement, i tested the respective cases of the state of the robot relatively to the obstacles
+and set the velocity of the robot based on them. The variables leftSpeed and rightSpeed modify the wheel velocity
+for the convinient movement of the robot.
+```sh
 if front_no_obstacle and fleft_no_obstacle and fright_no_obstacle:
         print('Case 1 - Nothing')
         leftSpeed  = percentile_velocity * MAX_SPEED
         rightSpeed = percentile_velocity * MAX_SPEED
 
-    elif front_obstacle and fleft_no_obstacle and fright_no_obstacle:
+
+        if k < 1:
+            print('I am blocked by an obstacle edge!')
+            leftSpeed  = - 1 * MAX_SPEED
+            rightSpeed = - 1 * MAX_SPEED
+
+            leftMotor.setVelocity(leftSpeed)
+            rightMotor.setVelocity(rightSpeed)
+
+            leftSpeed  = percentile_velocity * MAX_SPEED
+            rightSpeed = - percentile_velocity *MAX_SPEED
+
+            leftMotor.setVelocity(leftSpeed)
+            rightMotor.setVelocity(rightSpeed)
+
+elif front_obstacle and fleft_no_obstacle and fright_no_obstacle:
         print('Case 2 - Front')
         leftSpeed  = percentile_velocity * MAX_SPEED
         rightSpeed = -percentile_velocity * MAX_SPEED
@@ -170,19 +207,13 @@ if front_no_obstacle and fleft_no_obstacle and fright_no_obstacle:
         print('Case 6 - Fleft and Fright')
         leftSpeed  = percentile_velocity * MAX_SPEED
         rightSpeed = percentile_velocity * MAX_SPEED
-    
     else:
         print('Unknown case')
 
-With conditional if statement i test the respective cases
-of the state of the robot relatively to the obstacles
-and set the velocity of the robot based on them. The vari
-ables leftSpeed and rightSpeed modify the wheel velocity
-for the convinient movement of the robot.
-
+```
+Finally the velocity will be updated based on the conditional statement and move the robot through
+the maze avoidi ng obstacles.
+```sh
 leftMotor.setVelocity(leftSpeed)
 rightMotor.setVelocity(rightSpeed)
-
-Finally the velocity will be updated based on the conditi
-onal statement and move the robot through the maze avoidi
-ng obstacles.
+```
