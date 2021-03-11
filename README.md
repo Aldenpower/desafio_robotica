@@ -1,8 +1,8 @@
 # Desafio de robótica
 For solving the challenge i created a controller located at the folder:
->webots_project/controllers/sensors_obstacles/sensors_obstacles.py
+>webots_project/controllers/sensors_obstacles/sensors_obstacles.py<
 I added a light sensor at the extension slot of the robot in the file:
->webots_project/worlds/pioneer3dx_desafio.wbt
+>webots_project/worlds/pioneer3dx_desafio.wbt<
 ### THE CONTROLLER
 #### _Importing python classes_
 ```sh
