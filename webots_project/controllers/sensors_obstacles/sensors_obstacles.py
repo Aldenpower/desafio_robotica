@@ -30,14 +30,6 @@ for i in range(MAX_SONAR_SENSOR_NUMBER):
 ls = robot.getDevice('light sensor')
 ls.enable(TIME_STEP)
 
-# Initializing position sensors
-ps_ = []
-psname = ['left wheel sensor', 'right wheel sensor']
-
-for i in range(MAX_POSITION_SENSOR_NUMBER):
-    ps_.append(robot.getDevice(psname[i]))
-    ps_[i].enable(TIME_STEP)
-
 # Getting wheel devices
 leftMotor = robot.getDevice('left wheel')
 rightMotor = robot.getDevice('right wheel')
@@ -195,6 +187,5 @@ while robot.step(TIME_STEP) != -1:
         print(f's{c} {dist}')
         c += 1
     
-    print(f'Light sensor value {ls_value}')
     print(f'Average sonar sensor distance {round(average_sonar_sensor, 2)}')
     print(f'Loop counter {loop_counter_acum[-1]}')
