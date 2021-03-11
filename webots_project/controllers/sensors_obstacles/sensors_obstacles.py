@@ -88,11 +88,6 @@ while robot.step(TIME_STEP) != -1:
     k = std_dev(10)
     print(f'Standard deviation of 10 last average laser values {k}')
 
-    # Getting position sensor values
-    psValues = []
-    for i in range(MAX_POSITION_SENSOR_NUMBER):
-        psValues.append(ps_[i].getValue())
-
     # Getting light sensor values
     ls_value = ls.getValue()
 
@@ -117,7 +112,6 @@ while robot.step(TIME_STEP) != -1:
     fright_no_obstacle = Sonar_distance('fright') < dist_param
     fleft_no_obstacle = Sonar_distance('fleft') < dist_param
     
-    print('Positon values', psValues)
     print('Distance sensor values')
     # Creating conditonal obstacles avoiding and setting motor velocity
     if front_no_obstacle and fleft_no_obstacle and fright_no_obstacle:
@@ -190,9 +184,6 @@ while robot.step(TIME_STEP) != -1:
     # Setting velocity
     leftMotor.setVelocity(leftSpeed)
     rightMotor.setVelocity(rightSpeed)
-
-    leftMotor.setPosition(float('inf'))
-    rightMotor.setPosition(float('inf'))
 
     # Loop counter
     counter += 1
