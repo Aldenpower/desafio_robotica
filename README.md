@@ -14,6 +14,7 @@ to the stop board.
 - Clone this repository with git clone https://github.com/Aldenpower/desafio_robotica.git
 - Open the world file (webots_project/worlds/pioneer3dx_desafio.wbt) inside the webots and run the simulation 
 ### THE CONTROLLER
+- webots_project/controllers/sensors_obstacles/sensors_obstacles.py
 #### _Importing python classes_
 ```sh
 from controller import Robot
