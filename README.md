@@ -1,4 +1,4 @@
-# Desafio de robótica
+# Robotics challenge
 ### INTRODUCTION
 This respository contains files for simulating a world at the webots simulator
 and a main controller to guide the robot through the world. The controller was
@@ -14,7 +14,7 @@ to the stop board.
 - Clone this repository with git clone https://github.com/Aldenpower/desafio_robotica.git
 - Open the world file (webots_project/worlds/pioneer3dx_desafio.wbt) inside the webots and run the simulation 
 ### IMPLEMENTATION DETAILS
-- webots_project/controllers/sensors_obstacles/sensors_obstacles.py
+- The controller : webots_project/controllers/sensors_obstacles/sensors_obstacles.py
 #### _Importing python classes_
 ```sh
 from controller import Robot
