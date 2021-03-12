@@ -254,6 +254,6 @@ print(f'Average sonar sensor distance {round(average_sonar_sensor, 2)}')
 print(f'Loop counter {loop_counter_acum[-1]}')
 ```
 ### CONCLUSION
-This repository was created for solving the challenge that refers to challenge of Robótica e Sistemas Autônomos - SENAI
+This repository was created for solving the challenge that refers to Robótica e Sistemas Autônomos - SENAI 2021
 
 The controller can be changed, feel free to contribute with this repository!
