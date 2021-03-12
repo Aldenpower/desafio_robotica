@@ -13,7 +13,7 @@ to the stop board.
 - Follow the instalation instructions of the webots simulator https://cyberbotics.com/doc/guide/installing-webots
 - Clone this repository with git clone https://github.com/Aldenpower/desafio_robotica.git
 - Open the world file (webots_project/worlds/pioneer3dx_desafio.wbt) inside the webots and run the simulation 
-### THE CONTROLLER
+### IMPLEMENTATION DETAILS
 - webots_project/controllers/sensors_obstacles/sensors_obstacles.py
 #### _Importing python classes_
 ```sh
