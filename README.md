@@ -1,9 +1,18 @@
 # Desafio de robótica
-For solving the challenge i created a controller located at the folder:
->webots_project/controllers/sensors_obstacles/sensors_obstacles.py
+### INTRODUCTION
+This respository contains files for simulating a world at the webots simulator
+and a main controller to guide the robot through the world. The controller was
+created for solving the maze in the world file. The robot starts at the start board
+and go through the maze avoiding obstacles and must stop at the light point closer
+to the stop board.
+#### _File organization_
+- resources > Base files
+- webots_project > Webots simulator files
 
-I added a light sensor at the extension slot of the robot in the file:
->webots_project/worlds/pioneer3dx_desafio.wbt
+#### _Setup_
+- Follow the instalation instructions of the webots simulator https://cyberbotics.com/doc/guide/installing-webots
+- Clone this repository with git clone https://github.com/Aldenpower/desafio_robotica.git
+- Open the world file (webots_project/worlds/pioneer3dx_desafio.wbt) inside the webots and run the simulation 
 ### THE CONTROLLER
 #### _Importing python classes_
 ```sh
